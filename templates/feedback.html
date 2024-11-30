@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block remtitle %} FeedBack {% endblock %}
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Welcome {{ customer.name }}</a>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+        <a class="navbar-brand" href="/customer/dashboard">Home</a>
+        <a class="navbar-brand" href="/customer/search">Search</a>
+        <a class="navbar-brand" href="/customer/summary">Summary</a>
+      </div>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-link" href="/customer/profile">Profile</a>
+        </div>
+        <div class="navbar-nav">
+          <a class="nav-link" href="/logout">Logout</a>
+        </div>
+      </div>
+    </div>
+</nav>
+
+<section class="vh-100 gradient-custom">
+    <div class="container py-5 h-100">
+        <div class="row justify-content-center align-items-center h-100">
+            <div class="col-12 col-lg-9 col-xl-7">
+                <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
+                    <div class="card-body p-4 p-md-5">
+                        <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">FeedBack Form</h3>
+                        <strong>{{ service.name }}</strong><br>
+                        <strong>Description: </strong>{{ service.description | truncate(600) }}<br>
+                        <form method="POST" action="../dashboard/{{ requested_service.id }}">
+
+                          <div class="form-group">
+                            <label for="rating"><h4>Rating:</h4></label>
+                            <div class="star-rating">
+                              {% for i in range(5, 0, -1) %}
+                                <input type="radio" name="rating" id="star{{ i }}" value="{{ i }}" required>
+                                <label for="star{{ i }}">&#9733;</label>
+                              {% endfor %}
+                            </div>
+                          </div>
+
+                          <div class="row">
+                            <div class="col-md-6 mb-4">
+                              <div data-mdb-input-init class="form-outline">
+                                <textarea id="re" name="remark" rows="1" cols="50" placeholder="Enter your Remark here..." class="form-control form-control-lg" required></textarea>
+                                <label class="form-label" for="re">Remark</label>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="terms">
+                            <input type="checkbox" id="acceptTerms" onclick="toggleSubmit()">
+                            <label for="acceptTerms">I hereby acknowledge that the service was provided on time and has been successfully completed.</label>
+                          </div>
+                            <button type="submit" id="submitBtn" name="action" value="close" disabled class="btn btn-primary btn-lg">Submit</button>    
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<script>
+  function toggleSubmit() {
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = !document.getElementById('acceptTerms').checked;
+  }
+</script>
+{% endblock %}

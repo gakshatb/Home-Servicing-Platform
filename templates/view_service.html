@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block remtitle %} My Services - {{ user.name }} {% endblock %}
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Welcome {{ user.name }}</a>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+      <a class="navbar-brand" href="/{{user_type}}/dashboard">Home</a>
+      <a class="navbar-brand" href="/{{user_type}}/search">Search</a>
+      <a class="navbar-brand" href="/{{user_type}}/summary">Summary</a>
+    </div>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-link" href="/{{user_type}}/profile">Profile</a>
+      </div>
+      <div class="navbar-nav">
+        <a class="nav-link" href="/logout">Logout</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+<section class="gradient-custom hcolor" style="min-height: 100vh;">
+  <div class="container py-5 h-100">
+    <div class="position-relative">
+      <span class="h1">MY SERVICES</span>
+      <a href="/{{user_type}}/addservice" class="btn btn-success btn-sm position-absolute top-0 end-0 m-2">Add New Service</a>
+    </div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Service ID</th>
+          <th scope="col">Service Name</th>
+          <th scope="col">Service Type</th>
+          <th scope="col">Price</th>
+          <th scope="col">Description</th>
+          <th scope="col">Time Required</th>
+          <th scope="col">Created At</th>
+          <th scope="col">Status</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if service %}
+        {% for temp in service %}
+        <tr>
+          <td>{{ temp.id }}</td>
+          <td>{{ temp.name }}</td>
+          <td>{{ temp.ServiceType }}</td>
+          <td>{{ temp.price }}</td>
+          <td>{{ temp.description }}</td>
+          <td>{{ temp.time_required }}</td>
+          <td>{{ temp.created_at }}</td>
+          <td>
+            {% if temp.status_service == 'rejected' %}
+            <span class="badge bg-danger text-dark">Rejected</span>
+            {% elif temp.status_service == 'approved' %}
+            <span class="badge bg-success text-dark">Accepted</span>
+            {% else %}
+            <span class="badge bg-warning text-dark">Under Review</span>
+            {% endif %}
+          </td>
+          <td>
+            <form method="POST" action="./service_action/{{ temp.id }}">
+                {%if temp.status_service == 'rejected' %}
+                <button type="submit" name="action" value="resubmit" class="btn btn-primary btn-sm">Resubmit</button>
+                {% else %}
+                <button type="submit" name="action" value="delete" class="btn btn-danger btn-sm">Delete</button>
+                {% endif %}
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+{% endblock %}

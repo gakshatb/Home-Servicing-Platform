@@ -1,0 +1,13 @@
+class app_config:
+    APP_SECRET_KEY = "your_secret_key"
+    admin_code = "AS659AW52S9D9W"
+    database = "database.sqlite3"
+    admin_name = "Akshat B Gupta"
+    admin_uname = "gakshatb"
+    admin_email = "gakshatb@gmail.com"
+    admin_phone = "6397906947"
+    admin_password = "gakshatb"
+    admin_street = "201 Asher Villa"
+    admin_city = "Sangli"
+    admin_state = "Maharashtra"
+    admin_postal_code = "416415"

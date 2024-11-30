@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+{% block remtitle %} Customer Dashboard {% endblock %}
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Welcome {{ customer.name }}</a>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+      <a class="navbar-brand" href="/customer/dashboard">Home</a>
+      <a class="navbar-brand" href="/customer/search">Search</a>
+      <a class="navbar-brand" href="/customer/summary">Summary</a>
+    </div>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-link" href="/customer/profile">Profile</a>
+      </div>
+      <div class="navbar-nav">
+        <a class="nav-link" href="/logout">Logout</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<section class="gradient-custom hcolor" style="min-height: 100vh;">
+  <div class="container py-5 h-100">
+    <h1>Looking For Service</h1>
+    <div class="row">
+      {% if active_services %}
+      <div id="serviceCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          {% for i in range(0, active_services|length, 3) %}
+            <div class="carousel-item {% if i == 0 %}active{% endif %}">
+              <div class="container">
+                <div class="row justify-content-center">
+                  {% for temp in active_services[i:i+3] %}
+                    <div class="col-md-3 mx-2">
+                      <div class="card service-card">
+                        <div class="card-body">
+                          <h5 class="card-title">{{ temp.ServiceType }}</h5>
+                          <p class="card-text">{{ temp.name }}</p>
+                          <p class="card-text">{{ temp.description | truncate(30)}}</p>
+                          <a href="/customer/create_request/{{ temp.id }}" class="btn btn-success">Request</a>
+                          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#serviceModal{{ temp.id }}">View</button>
+                        </div>
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+        <!-- Carousel controls -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#serviceCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#serviceCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>      
+      {% else %}
+        <p>No active Services</p>
+      {% endif %}
+    </div>
+
+    <h1>Accepted Request</h1>
+    <table class="table text-center">
+      <thead>
+        <tr>
+          <th scope="col">Service ID</th>
+          <th scope="col">Service Name</th>
+          <th scope="col">Service Type</th>
+          <th scope="col">Description</th>
+          <th scope="col">Professional</th>
+          <th scope="col">Phone</th>
+          <th scope="col">Started At</th>
+          <th scope="col">Excepted To Complete</th>
+          <th scope="col">Message</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for temp in service_accepted %}
+        <tr>
+          <td>{{ temp.service_id }}</td>
+          <td>{{ temp.service.name }}</td>
+          <td>{{ temp.service.ServiceType }}</td>
+          <td>{{ temp.service.description | truncate(30) }}</td>
+          <td>{{ temp.professional.name }}</td>
+          <td>{{ temp.professional.phone }}</td>
+          <td>{{ temp.date_of_request }}</td>
+          <td>{{ temp.date_of_completion }}</td>
+          <td>{{ temp.messages | truncate(15) }}</td>
+          <td>
+            <a class="btn btn-success btn-sm" href="feedback/{{ temp.id }}">Close</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="container py-5 h-100">
+    <h1>Service Requested</h1>
+    <table class="table text-center">
+      <thead>
+        <tr>
+          <th scope="col">Service ID</th>
+          <th scope="col">Service Name</th>
+          <th scope="col">Service Type</th>
+          <th scope="col">Description</th>
+          <th scope="col">Professional</th>
+          <th scope="col">Phone</th>
+          <th scope="col">Started At</th>
+          <th scope="col">Excepted To Complete</th>
+          <th scope="col">Message</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for temp in service_requested %}
+        <tr>
+          <td>{{ temp.service_id }}</td>
+          <td>{{ temp.service.name }}</td>
+          <td>{{ temp.service.ServiceType }}</td>
+          <td>{{ temp.service.description | truncate(30) }}</td>
+          <td>{{ temp.professional.name }}</td>
+          <td>{{ temp.professional.phone }}</td>
+          <td>{{ temp.date_of_request }}</td>
+          <td>{{ temp.date_of_completion }}</td>
+          <td>{{ temp.messages | truncate(15) }}</td>
+          <td>
+            <form method="POST" action="dashboard/{{ temp.id }}">
+              <button type="submit" name="action" value="delete" class="btn btn-danger btn-sm">Delete</button>    
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="container py-5 h-100" id="customer-service-history">
+    <h1>Service History</h1>
+    <table class="table text-center">
+      <thead>
+        <tr>
+          <th scope="col">Service ID</th>
+          <th scope="col">Service Name</th>
+          <th scope="col">Service Type</th>
+          <th scope="col">Description</th>
+          <th scope="col">Professional</th>
+          <th scope="col">Phone</th>
+          <th scope="col">Started At</th>
+          <th scope="col">Completed At</th>
+          <th scope="col">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for temp in service_history %}
+        <tr>
+          <td>{{ temp.service_id }}</td>
+          <td>{{ temp.service.name }}</td>
+          <td>{{ temp.service.ServiceType }}</td>
+          <td>{{ temp.service.description | truncate(30) }}</td>
+          <td>{{ temp.professional.name }}</td>
+          <td>{{ temp.professional.phone }}</td>
+          <td>{{ temp.date_of_request }}</td>
+          <td>{{ temp.date_of_completion }}</td>
+          <td>{{ temp.service_status }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+
+{% for temp in active_services %}
+<div class="modal fade" id="serviceModal{{ temp.id }}" tabindex="-1" role="dialog" aria-labelledby="serviceModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p>Service ID: {{ temp.id }}</p>
+        <p>Service Name: {{ temp.name }}</p>
+        <p>Service Type: {{ temp.ServiceType }}</p>
+        <p class="card-text text-wrap">Description: {{ temp.description }}</p>
+        <p>Time Required: {{ temp.time_required }}</p>
+        <p>Price: {{ temp.price }}</p>
+        {%for u in user%}
+          {%if u.id == temp.professional_id%}
+            <p>Professional ID: {{ u.id }}</p>
+            <p>Professional Name: {{ u.name }}</p>
+            <p>Professional Phone: {{ u.phone }}</p>
+            <p>Professional Email: {{ u.email }}</p>
+          {%endif%}
+        {%endfor%}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+
+{% endblock %}

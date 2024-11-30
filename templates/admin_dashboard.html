@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+{% block cont %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+  integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> 
+{% endblock %}
+{% block remtitle %} Admin Dashboard {% endblock %}
+{% block content %}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Welcome {{ admin.name }}</a>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+      <a class="navbar-brand" href="/admin/dashboard">Home</a>
+      <a class="navbar-brand" href="/admin/search">Search</a>
+      <a class="navbar-brand" href="/admin/summary">Summary</a>
+    </div>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-link" href="/admin/profile">Profile</a>
+      </div>
+      <div class="navbar-nav">
+        <a class="nav-link" href="/logout">Logout</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<section class="gradient-custom hcolor" style="min-height: 100vh;">
+  <div class="container py-5 h-100">
+    <div class="position-relative">
+      <span class="h1">Active Services</span>
+      <a href="/admin/addservice" class="btn btn-success btn-sm position-absolute top-0 end-0 m-2">Add New Service</a>
+    </div>
+    <table class="table text-center">
+      <thead>
+        <tr>
+          <th scope="col">Service ID</th>
+          <th scope="col">Service Name</th>
+          <th scope="col">Service Type</th>
+          <th scope="col">Description</th>
+          <th scope="col">Time Required</th>
+          <th scope="col">Price</th>
+          <th scope="col">Created By<br>(Professional ID)</th>
+          <th scope="col">Time</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for temp in service_approved %}
+        <tr>
+          <td>{{ temp.id }}</td>
+          <td>{{ temp.name }}</td>
+          <td>{{ temp.ServiceType }}</td>
+          <td>{{ temp.description | truncate(30) }}</td>
+          <td>{{ temp.time_required }}</td>
+          <td>{{ temp.price }}</td>
+          <td>{{ temp.professional_id }}</td>
+          <td>{{ temp.created_at }}</td>
+          <td>
+            <form method="post" action="/admin/dashboard/{{ temp.id }}">
+              <button type="submit" name="action" value="reject" class="btn btn-primary btn-sm">Reject</button>
+              <button type="submit" name="action" value="delete" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <h1>Services Under Review</h1>
+    <table class="table text-center">
+      <thead>
+        <tr>
+          <th scope="col">Service ID</th>
+          <th scope="col">Service Name</th>
+          <th scope="col">Service Type</th>
+          <th scope="col">Description</th>
+          <th scope="col">Time Required</th>
+          <th scope="col">Price</th>
+          <th scope="col">Created By<br>(Professional ID)</th>
+          <th scope="col">Time</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for temp in service_to_approve %}
+        <tr>
+          <td>{{ temp.id }}</td>
+          <td>{{ temp.name }}</td>
+          <td>{{ temp.ServiceType }}</td>
+          <td>{{ temp.description | truncate(30) }}</td>
+          <td>{{ temp.time_required }}</td>
+          <td>{{ temp.price }}</td>
+          <td>{{ temp.professional_id }}</td>
+          <td>{{ temp.created_at }}</td>
+          <td>
+            <form method="post" action="/admin/dashboard/{{ temp.id }}">
+              <button type="submit" name="action" value="approve" class="btn btn-success btn-sm">Approve</button>
+              <button type="submit" name="action" value="reject" class="btn btn-primary btn-sm">Reject</button>
+              <button type="submit" name="action" value="delete" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <h1>Rejected Services</h1>
+    <table class="table text-center">
+      <thead>
+        <tr>
+          <th scope="col">Service ID</th>
+          <th scope="col">Service Name</th>
+          <th scope="col">Service Type</th>
+          <th scope="col">Description</th>
+          <th scope="col">Time Required</th>
+          <th scope="col">Price</th>
+          <th scope="col">Created By<br>(Professional ID)</th>
+          <th scope="col">Time</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for temp in service_rejected %}
+        <tr>
+          <td>{{ temp.id }}</td>
+          <td>{{ temp.name }}</td>
+          <td>{{ temp.ServiceType }}</td>
+          <td>{{ temp.description | truncate(30) }}</td>
+          <td>{{ temp.time_required }}</td>
+          <td>{{ temp.price }}</td>
+          <td>{{ temp.professional_id }}</td>
+          <td>{{ temp.created_at }}</td>
+          <td>
+            <form method="post" action="/admin/dashboard/{{ temp.id }}">
+              <button type="submit" name="action" value="approve" class="btn btn-success btn-sm">Approve</button>
+              <button type="submit" name="action" value="delete" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <h1>All Users</h1>
+    <table class="table text-center">
+      <thead>
+        <tr>
+          <th scope="col">User ID</th>
+          <th scope="col">Username</th>
+          <th scope="col">Name</th>
+          <th scope="col">E-Mail</th>
+          <th scope="col">Phone No.</th>
+          <th scope="col">Role</th>
+          <th scope="col">View Details</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in all_users %}
+        <tr> 
+          <td>{{ user.id }}</td>
+          <td>{{ user.username }}</td>
+          <td>{{ user.name }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.phone }}</td>
+          <td>
+            {% if user.is_admin %}
+            Admin
+            {% elif user.is_professional %}
+            Professional
+            {% elif user.is_customer %}
+            Customer
+            {% endif %}
+          </td>
+          <td>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#userModal{{ user.id }}">View</button>
+          </td>
+          <td>
+            <form method="post" action="/admin/dashboard/{{ user.id }}">
+              <button type="submit" name="action" value="delete_user" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <h1>All Services Requests</h1>
+    <table class="table text-center">
+      <thead>
+        <tr>
+          <th scope="col">Request ID</th>
+          <th scope="col">Service ID</th>
+          <th scope="col">Service Name</th>
+          <th scope="col">Customer ID</th>
+          <th scope="col">Professional ID</th>
+          <th scope="col">Date of Request</th>
+          <th scope="col">Service Status</th>
+          <th scope="col">Messages</th>
+          <th scope="col">Rating</th>
+          <th scope="col">Remarks</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for service_req in all_ServiceRequest %}
+        <tr>
+          <td>{{ service_req.id }}</td>
+          <td>{{ service_req.service.id }}</td>
+          <td>{{ service_req.service.name }}</td>
+          <td>{{ service_req.customer_id }}</td>
+          <td>{{ service_req.professional_id }}</td>
+          <td>{{ service_req.date_of_request }}</td>
+          {% if service_req.service_status == 'open' %}
+            <td class="text-success">{{ service_req.service_status }}</td>
+          {% elif service_req.service_status == 'closed' %}
+            <td class="text-danger">{{ service_req.service_status }}</td>
+          {% else %}
+            <td>{{ service_req.service_status }}</td>
+          {% endif %}
+          <td>{{ service_req.messages }}</td>
+          <td>{{ service_req.feedback.rating }}</td>
+          <td>{{ service_req.feedback.remarks }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- User Modal -->
+
+{% for user in all_users %}
+<div class="modal fade" id="userModal{{ user.id }}" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="userModalLabel">{{ user.username }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Name: {{ user.name }}</p>
+        <p>Email: {{ user.email }}</p>
+        <p>Phone: {{ user.phone }}</p>
+        <p>Street Address: {{ user.street }}</p>
+        <p>City: {{ user.city }}</p>
+        <p>State/Province: {{ user.state }}</p>
+        <p>Postal Code: {{ user.postal_code }}</p>
+        {% if user.is_admin %}
+        <p>Role: Admin</p>
+        {% elif user.is_professional %}
+        <p>Role: Professional</p>
+        {% elif user.is_customer %}
+        <p>Role: Customer</p>
+        {% endif %}
+        <p>Description: {{ user.description }}</p>
+        <p>Experience: {{ user.experience }}</p>
+        <p>Created At: {{ user.created_at }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+{% endblock %}

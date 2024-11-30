@@ -1,0 +1,300 @@
+{% extends "base.html" %}
+{% block remtitle %}Search{% endblock %}
+{% block cont %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary">
+    <div class="container">
+        <a class="navbar-brand" href="#">Welcome {{ user.name }}</a>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+            <a class="navbar-brand" href="/{{ user_type }}/dashboard">Home</a>
+            <a class="navbar-brand" href="/{{ user_type }}/summary">Summary</a>
+        </div>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-link" href="/{{ user_type }}/profile">Profile</a>
+            </div>
+            {% if user_type == 'professional' %}
+            <div class="navbar-nav">
+                <a class="nav-link" href="/{{user_type}}/myservices">My Services</a>
+            </div>
+            {% endif %}
+            <div class="navbar-nav">
+                <a class="nav-link" href="/logout">Logout</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<section class="gradient-custom" style="min-height: 100vh;">   
+    <div class="container py-5 h-100">
+        <div class="search-container text-center">
+            <h1>Search</h1>
+            <form class="d-flex justify-content-center" role="search" method="POST" action="/{{ user_type }}/search">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="query" style="max-width: 400px;">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        </div>
+        
+        {% if user_type == 'customer' %}
+            {% if query %}
+                <h1 class="text-center">Search Results for "{{ query }}"</h1>
+                {% if results %}
+                    <div class="table-responsive">
+                        <table class="table text-center">
+                            <thead>
+                            <tr>
+                                <th scope="col">Service ID</th>
+                                <th scope="col">Service Name</th>
+                                <th scope="col">Service Type</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Time Required</th>
+                                <th scope="col">Professional</th>
+                                <th scope="col">Phone</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for temp, prof in zip(results, professionals) %}
+                            <tr>
+                                <td>{{ temp.id }}</td>
+                                <td>{{ temp.name }}</td>
+                                <td>{{ temp.ServiceType }}</td>
+                                <td>{{ temp.price }}</td>
+                                <td>{{ temp.description | truncate(30) }}</td>
+                                <td>{{ temp.time_required }}</td>
+                                <td>{{ prof.name }}</td>
+                                <td>{{ prof.phone }}</td>
+                                <td>
+                                    <a href="/customer/create_request/{{ temp.id }}" class="btn btn-success btn-sm">Request</a>
+                                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#serviceModal{{ temp.id }}">View</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% for temp, prof in zip(results, professionals) %}
+                        <div class="modal fade" id="serviceModal{{ temp.id }}" tabindex="-1" role="dialog" aria-labelledby="serviceModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        <p>Service ID: {{ temp.id }}</p>
+                                        <p>Service Name: {{ temp.name }}</p>
+                                        <p>Service Type: {{ temp.ServiceType }}</p>
+                                        <p class="card-text text-wrap">Description: {{ temp.description }}</p>
+                                        <p>Time Required: {{ temp.time_required }}</p>
+                                        <p>Price: {{ temp.price }}</p>
+                                        <p>Professional: {{ prof.name }}</p>
+                                        <p>Phone: {{ prof.phone }}</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-center fw-bold text-dark">No results found.</p>
+                {% endif %}
+            {% else %}
+                <p class="text-center mt-4">Enter a search query to find services.</p>
+            {% endif %}
+        {% elif user_type == 'professional' %}
+            <div class="container mt-4">
+                {% if query %}
+                    <h4>Search Results for "{{ query }}"</h4>
+                    <hr>
+                    <!-- Services Section -->
+                    <h5>Your Services</h5>
+                    {% if results.services %}
+                        <div class="accordion" id="accordion">
+                            {% for service in results.services %}
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button 
+                                            class="accordion-button" 
+                                            type="button" 
+                                            data-bs-toggle="collapse" 
+                                            data-bs-target="#collapse{{ loop.index }}" 
+                                            aria-expanded="false" 
+                                            aria-controls="collapse{{ loop.index }}"
+                                        >
+                                            <strong>Service ID: {{ service.id }}</strong>
+                                        </button>
+                                    </h2>
+                                    <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#accordion">
+                                        <div class="accordion-body">
+                                            <strong>Service Name: </strong>{{ service.name }}<br> 
+                                            <strong>{{ service.ServiceType }}</strong><br> 
+                                            <p>{{ service.description }}</p>
+                                            <p><strong>Price:</strong> ₹{{ service.price }}</p>
+                                            <p><strong>Status:</strong> {{ service.status_service }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="fs-4 fw-bold text-dark">No matching services found.</p>
+                    {% endif %}
+
+                    <h5 class="mt-4">Your Customers</h5>
+                    {% if results.customers %}
+                        <div class="accordion" id="accordionx">
+                            {% for customer in results.customers %}
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button 
+                                            class="accordion-button" 
+                                            type="button" 
+                                            data-bs-toggle="collapse" 
+                                            data-bs-target="#capse{{ loop.index }}" 
+                                            aria-expanded="false" 
+                                            aria-controls="capse{{ loop.index }}"
+                                        >
+                                            <strong>Customer Name: {{ customer.customer.name }}</strong>
+                                        </button>
+                                    </h2>
+                                    <div id="capse{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#accordionx">
+                                        <div class="accordion-body">
+                                            <p><strong>Email:</strong> {{ customer.customer.email }}</p>
+                                            <p><strong>Phone:</strong> {{ customer.customer.phone }}</p>
+                                            <p><strong>Service:</strong> {{ customer.service.name }}</p>
+                                            <p><strong>Status:</strong> {{ customer.service_status }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="fs-4 fw-bold text-dark">No matching customers found.</p>
+                    {% endif %}
+                {% else %}
+                    <p class="text-center mt-4">Enter a search query to find services or customers.</p>
+                {% endif %}
+            </div>
+        {% elif user_type == 'admin' %}
+            <div class="container mt-4">
+                {% if query %}
+                    <h4>Search Results for "{{ query }}"</h4>
+                    <hr>
+                    <!-- Services Section -->
+                    <h5>Services</h5>
+                    {% if results.services %}
+                        <div class="accordion" id="accordion1">
+                            {% for service in results.services %}
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button 
+                                            class="accordion-button" 
+                                            type="button" 
+                                            data-bs-toggle="collapse" 
+                                            data-bs-target="#collapse1{{ loop.index }}" 
+                                            aria-expanded="false" 
+                                            aria-controls="collapse1{{ loop.index }}"
+                                        >
+                                            <strong>Service ID: {{ service.id }}</strong>
+                                        </button>
+                                    </h2>
+                                    <div id="collapse1{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#accordion1">
+                                        <div class="accordion-body">
+                                            <strong>Service Name: </strong>{{ service.name }}<br> 
+                                            <strong>{{ service.ServiceType }}</strong><br> 
+                                            <p>{{ service.description }}</p>
+                                            <p><strong>Price:</strong> ₹{{ service.price }}</p>
+                                            <p><strong>Status:</strong> {{ service.status_service }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="fs-4 fw-bold text-dark">No matching services found.</p>
+                    {% endif %}
+
+                    <h5 class="mt-4">Users</h5>
+                    {% if results.users %}
+                        <div class="accordion" id="accordion2">
+                            {% for user in results.users %}
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button 
+                                            class="accordion-button" 
+                                            type="button" 
+                                            data-bs-toggle="collapse" 
+                                            data-bs-target="#collapse2{{ loop.index }}" 
+                                            aria-expanded="false" 
+                                            aria-controls="collapse2{{ loop.index }}"
+                                        >
+                                            <strong>User Name: {{ user.name }}</strong>
+                                        </button>
+                                    </h2>
+                                    <div id="collapse2{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#accordion2">
+                                        <div class="accordion-body">
+                                            <p><strong>Username:</strong> {{ user.username }}</p>
+                                            <p><strong>Email:</strong> {{ user.email }}</p>
+                                            <p><strong>Phone:</strong> {{ user.phone }}</p>
+                                            <p><strong>Address:</strong> {{ user.street }}, {{ user.city }}, {{ user.state }}, {{ user.postal_code }}</p>
+                                            {% if user.is_admin %}
+                                                <p><strong>Role:</strong> Admin</p>
+                                            {% elif user.is_customer %}
+                                                <p><strong>Role:</strong> Customer</p>
+                                            {% elif user.is_professional %}
+                                                <p><strong>Role:</strong> Professional</p>
+                                                <p><strong>Description:</strong> {{ user.description }}</p>
+                                                <p><strong>Experience:</strong> {{ user.experience }} years</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="fs-4 fw-bold text-dark">No matching User found.</p>
+                    {% endif %}
+
+                    <h5 class="mt-4">Service Requests</h5>
+                    {% if results.requests %}
+                        <div class="accordion" id="accordion3">
+                            {% for req in results.requests %}
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button 
+                                            class="accordion-button" 
+                                            type="button" 
+                                            data-bs-toggle="collapse" 
+                                            data-bs-target="#collapse3{{ loop.index }}" 
+                                            aria-expanded="false" 
+                                            aria-controls="collapse3{{ loop.index }}"
+                                        >
+                                            <strong>Request ID: {{ req.id }}</strong>
+                                        </button>
+                                    </h2>
+                                    <div id="collapse3{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#accordion3">
+                                        <div class="accordion-body">
+                                            <p><strong>Service Requested:</strong> {{ req.service_id }}</p>
+                                            <p><strong>Customer:</strong> {{ req.customer_id }}</p>
+                                            <p><strong>Professional:</strong> {{ req.professional_id }}</p>
+                                            <p><strong>Service Status:</strong> {{ req.service_status }}</p>
+                                            <p><strong>Message:</strong> {{ req.messages }}</p>
+                                            <p><strong>Date Of Request:</strong> {{ req.date_of_request }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="fs-4 fw-bold text-dark">No matching Service Request found.</p>
+                    {% endif %}
+                {% else %}
+                    <p class="text-center mt-4">Enter a search query.</p>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

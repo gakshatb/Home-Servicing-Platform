@@ -1,0 +1,150 @@
+.flash-messages {
+    margin-top: 10px;
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.alert-success {
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
+
+.alert-danger {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+
+.gradient-custom{
+    background: #5f65b3;
+
+}
+
+@media (min-width: 768px) {
+    .gradient-form {
+        height: 100vh !important;
+    }
+}
+
+@media (min-width: 769px) {
+    .gradient-custom-2 {
+        border-top-right-radius: .3rem;
+        border-bottom-right-radius: .3rem;
+    }
+}
+
+
+.card-registration .select-input.form-control[readonly]:not([disabled]) {
+    font-size: 1rem;
+    line-height: 2.15;
+    padding-left: .75em;
+    padding-right: .75em;
+}
+
+.card-registration .select-arrow {
+    top: 13px;
+}
+
+.hcolor {
+    color: #ffffff;
+}
+
+.card-text {
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+.star-rating {
+    direction: rtl;
+    display: inline-flex;
+    font-size: 2rem;
+    }
+    .star-rating input[type="radio"] {
+    display: none;
+    }
+    .star-rating label {
+    color: lightgray;
+    cursor: pointer;
+    }
+    .star-rating input[type="radio"]:checked ~ label,
+    .star-rating label:hover,
+    .star-rating label:hover ~ label {
+    color: gold;
+    }
+.search-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #fff; /* White background */
+    border: 1px solid #ddd; /* Light border */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Light shadow */
+}
+.search-container h1 {
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.form-control:focus {
+    border-color: #66b3ff; 
+    box-shadow: 0 0 5px rgba(102, 179, 255, 0.5);
+}
+.btn-search {
+    background-color: #007bff; 
+    color: #fff;
+}
+.btn-search:hover {
+    background-color: #0056b3;
+}
+nav a:hover {
+    color: red;
+    background-color: #5f65b3;
+    border-radius: 20px;
+    padding: 5px;
+    text-decoration: none;
+    transition: all 0.1s ease-in-out;
+    text-align: center;
+}
+nav a {
+    border-radius: 20px;
+    padding: 5px;
+}
+
+.bottom-contact-bar {
+    background-color: #000000; /* Dark background */
+    color: white; /* White text */
+    padding: 10px 0;
+    bottom: 0;
+    width: 100%;
+    z-index: 1000;
+}
+.bottom-contact-bar a {
+    color: #f8f9fa; /* Light gray for links */
+    text-decoration: none;
+}
+.bottom-contact-bar a:hover {
+    color: #ffc107; /* Highlight color for hover */
+    text-decoration: underline;
+}
+.contact-icon {
+    margin-right: 8px;
+}
+.fixed-image {
+    border-radius: 10px;
+    max-width: 200px;
+    max-height: 180px;
+    display: block;
+    margin: 0 auto;
+    border: 2px solid #ddd;
+    width: 200px;
+    height: 180px;
+    border-radius: 10px;
+}

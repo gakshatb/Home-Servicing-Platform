@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block remtitle %} Edit Profile {% endblock %}
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Welcome {{ user.name }}</a>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+        <a class="navbar-brand" href="/{{user_type}}/dashboard">Home</a>
+        <a class="navbar-brand" href="/{{user_type}}/search">Search</a>
+        <a class="navbar-brand" href="/{{user_type}}/summary">Summary</a>
+      </div>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-link" href="/{{user_type}}/profile">Profile</a>
+        </div>
+        <div class="navbar-nav">
+          <a class="nav-link" href="/logout">Logout</a>
+        </div>
+      </div>
+    </div>
+</nav>
+
+<section class="vh-100 gradient-custom">
+    <div class="container py-5 h-100">
+        <div class="row justify-content-center align-items-center h-100">
+            <div class="col-12 col-lg-9 col-xl-7">
+                <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
+                    <div class="card-body p-4 p-md-5">
+                        <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">Update Profile</h3>
+                        <form method="POST" action="/{{user_type}}/profile_action" enctype="multipart/form-data">
+
+                          <div class="row">
+                            <div class="col-md-6 mb-4">
+                              <div data-mdb-input-init class="form-outline">
+                                <input type="email" id="email" name="email" class="form-control form-control-lg" />
+                                <label class="form-label" for="email">Email</label>
+                              </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                              <div data-mdb-input-init class="form-outline">
+                                <input type="tel" id="phone" name="phone" class="form-control form-control-lg" pattern="[0-9]{10}" title="Enter a valid 10-digit phone number"/>
+                                <label class="form-label" for="phone">Phone Number</label>
+                              </div>
+                            </div>
+                          </div>
+                       
+                          <div class="row">
+                            <div class="col-md-6 mb-4">
+                              <div data-mdb-input-init class="form-outline">
+                                <input type="text" id="street" name="street" class="form-control form-control-lg" />
+                                <label class="form-label" for="street">Street Address</label>                    
+                              </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                              <div data-mdb-input-init class="form-outline">
+                                <input type="text" id="city" name="city" class="form-control form-control-lg" />
+                                <label class="form-label" for="city">City</label>
+                              </div>
+                            </div>
+                          </div>
+          
+                          <div class="row">
+                            <div class="col-md-6 mb-4">
+                              <div data-mdb-input-init class="form-outline">
+                                <input type="text" id="state" name="state" class="form-control form-control-lg" />
+                                <label class="form-label" for="state">State/Province</label>
+                              </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                              <div data-mdb-input-init class="form-outline">
+                                <input type="text" id="postal_code" name="postal_code" class="form-control form-control-lg" pattern="[0-9]{6}" title="Enter a valid postal code"/>
+                                <label class="form-label" for="postal_code">Postal Code</label>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="row">
+                            <div class="col-md-6 mb-4">
+                              <div data-mdb-input-init class="form-outline">
+                                <textarea id="re" name="description" rows="1" cols="50" placeholder="Enter your description here..." class="form-control form-control-lg"></textarea>
+                                <label class="form-label" for="re">Description</label>
+                              </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                              <label for="profile" class="file-label">Upload Profile Picture:</label>
+                              <div data-mdb-input-init class="form-outline">
+                                <input type="file" id="profile" name="profile" class="form-control" accept="image/*">
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="terms">
+                            <input type="checkbox" id="acceptTerms" onclick="toggleSubmit()">
+                            <label for="acceptTerms">I accept that the changes in my details are correct and  I have read the <a href="#terms">terms and conditions</a>.</label>
+                          </div>
+                          <button type="submit" id="submitBtn" disabled name="action" value="editprofile" class="btn btn-primary btn-lg">Update Details</button>   
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+  function toggleSubmit() {
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = !document.getElementById('acceptTerms').checked;
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% block remtitle %} Professional Dashboard {% endblock %}
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Welcome {{ professional.name }}</a>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+      <a class="navbar-brand" href="/professional/dashboard">Home</a>
+      <a class="navbar-brand" href="/professional/search">Search</a>
+      <a class="navbar-brand" href="/professional/summary">Summary</a>
+    </div>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-link" href="/professional/profile">Profile</a>
+      </div>
+      <div class="navbar-nav">
+        <a class="nav-link" href="/professional/myservices">My Services</a>
+      </div>
+      <div class="navbar-nav">
+        <a class="nav-link" href="/logout">Logout</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+<section class="gradient-custom hcolor" style="min-height: 100vh;">
+  <div class="container py-5 h-100">
+    <h1>Today's Service</h1>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Request ID</th>
+          <th scope="col">Customer Name</th>
+          <th scope="col">Phone</th>
+          <th scope="col">Address</th>
+          <th scope="col">Service ID</th>
+          <th scope="col">Service Name</th>
+          <th scope="col">Service Type</th>
+          <th scope="col">Date</th>
+          <th scope="col">Message</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for temp in service_attending %}
+        <tr>
+          <td>{{ temp.id }}</td>
+          <td>{{ temp.customer.name }}</td>
+          <td>{{ temp.customer.phone }}</td>
+          <td>{{ temp.customer.street }}, {{ temp.customer.city }}, {{ temp.customer.state }}, {{ temp.customer.postal_code }}</td>
+          <td>{{ temp.service_id }}</td>
+          <td>{{ temp.service.name }}</td>
+          <td>{{ temp.service.ServiceType }}</td>
+          <td>{{ temp.date_of_request }}</td>
+          <td>{{ temp.messages }}</td>
+          <td>
+            <form method="POST" action="dashboard/{{ temp.id }}">
+              <button type="submit" name="action" value="accept" class="btn btn-success btn-sm">Accept</button>    
+              <button type="submit" name="action" value="reject" class="btn btn-danger btn-sm">Reject</button>    
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="container py-5 h-100">
+    <h1>Ongoing Service</h1>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Request ID</th>
+          <th scope="col">Customer Name</th>
+          <th scope="col">Phone</th>
+          <th scope="col">Address</th>
+          <th scope="col">Service ID</th>
+          <th scope="col">Service Name</th>
+          <th scope="col">Service Type</th>
+          <th scope="col">Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for temp in service_ongoing %}
+        <tr>
+          <td>{{ temp.id }}</td>
+          <td>{{ temp.customer.name }}</td>
+          <td>{{ temp.customer.phone }}</td>
+          <td>{{ temp.customer.street }}, {{ temp.customer.city }}, {{ temp.customer.state }}, {{ temp.customer.postal_code }}</td>
+          <td>{{ temp.service_id }}</td>
+          <td>{{ temp.service.name }}</td>
+          <td>{{ temp.service.ServiceType }}</td>
+          <td>{{ temp.date_of_request }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="container py-5 h-100">
+    <h1>Closed Service</h1>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Request ID</th>
+          <th scope="col">Customer Name</th>
+          <th scope="col">Phone</th>
+          <th scope="col">Address</th>
+          <th scope="col">Service ID</th>
+          <th scope="col">Service Name</th>
+          <th scope="col">Service Type</th>
+          <th scope="col">Date</th>
+          <th scope="col">Rating</th>
+          <th scope="col">Remarks</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for temp in service_closed %}
+        <tr>
+          <td>{{ temp.id }}</td>
+          <td>{{ temp.customer.name }}</td>
+          <td>{{ temp.customer.phone }}</td>
+          <td>{{ temp.customer.street }}, {{ temp.customer.city }}, {{ temp.customer.state }}, {{ temp.customer.postal_code }}</td>
+          <td>{{ temp.service_id }}</td>
+          <td>{{ temp.service.name }}</td>
+          <td>{{ temp.service.ServiceType }}</td>
+          <td>{{ temp.date_of_request }}</td>
+          <td>{{ temp.feedback.rating }}&#9733;</td>
+          <td>{{ temp.feedback.remarks }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="container py-5 h-100">
+    <h1>Rejected Service</h1>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Request ID</th>
+          <th scope="col">Customer Name</th>
+          <th scope="col">Phone</th>
+          <th scope="col">Address</th>
+          <th scope="col">Service ID</th>
+          <th scope="col">Service Name</th>
+          <th scope="col">Service Type</th>
+          <th scope="col">Date</th>
+          <th scope="col">Message</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for temp in service_rejected %}
+        <tr>
+          <td>{{ temp.id }}</td>
+          <td>{{ temp.customer.name }}</td>
+          <td>{{ temp.customer.phone }}</td>
+          <td>{{ temp.customer.street }}, {{ temp.customer.city }}, {{ temp.customer.state }}, {{ temp.customer.postal_code }}</td>
+          <td>{{ temp.service_id }}</td>
+          <td>{{ temp.service.name }}</td>
+          <td>{{ temp.service.ServiceType }}</td>
+          <td>{{ temp.date_of_request }}</td>
+          <td>{{ temp.messages }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block remtitle %} Add Service {% endblock %}
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Welcome {{ user.name }}</a>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+            <a class="navbar-brand" href="/{{user_type}}/dashboard">Home</a>
+            <a class="navbar-brand" href="/{{user_type}}/search">Search</a>
+            <a class="navbar-brand" href="/{{user_type}}/summary">Summary</a>
+        </div>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-link" href="/{{user_type}}/profile">Profile</a>
+        </div>
+        <div class="navbar-nav">
+            <a class="nav-link" href="/professional/myservices">My Services</a>
+        </div>
+        <div class="navbar-nav">
+          <a class="nav-link" href="/logout">Logout</a>
+        </div>
+    </div>
+</div>
+</nav>
+
+<section class="vh-100 gradient-custom">
+    <div class="container py-5 h-100">
+        <div class="row justify-content-center align-items-center h-100">
+            <div class="col-12 col-lg-9 col-xl-7">
+                <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
+                    <div class="card-body p-4 p-md-5">
+                        <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">Add Servivce</h3>
+                        <form method="POST" action="/{{user_type}}/myservices">
+                            <div class="col-md-6 mb-4">
+                                <div data-mdb-input-init class="form-outline">
+                                    <input type="text" id="name" name="name" class="form-control form-control-lg" required />
+                                    <label class="form-label" for="name">Name</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div data-mdb-input-init class="form-group">
+                                    <label for="serviceSelect">Select Service Type</label>
+                                    <select class="form-control" id="serviceSelect" name="servicetype" required>
+                                        <option value="House Cleaning">House Cleaning</option>
+                                        <option value="Appliance Repair">Appliance Repair</option>
+                                        <option value="Electrical Services">Electrical Services</option>
+                                        <option value="Plumbing">Plumbing Services</option>
+                                        <option value="Furniture Assembly">Furniture Assembly</option>
+                                        <option value="Carpentry">Carpentry Services</option>
+                                        <option value="Painting">Painting Services</option>
+                                        <option value="Pest Control">Pest Control</option>
+                                        <option value="Automobile Services">Automobile Services</option>
+                                        <option value="Electronics Repair">Electronics Repair</option>
+                                        <option value="Beauty Care">Beauty and Personal Care</option>
+                                        <option value="Fitness & Wellness">Fitness & Wellness</option>
+                                        <option value="Relocation Services">Relocation Services</option>
+                                        <option value="Garden Services">Garden Services</option>
+                                        <option value="Security Services">Security Services</option>
+                                        <option value="Laundry Services">Laundry Services</option>
+                                        <option value="Event Services">Event Services</option>
+                                        <option value="Pet Care">Pet Care</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-4">
+                                <div data-mdb-input-init class="form-outline">
+                                    <input type="number" id="price" name="price" class="form-control form-control-lg" required/>
+                                    <label class="form-label" for="price">Price</label>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-4">
+                                <div data-mdb-input-init class="form-outline">
+                                    <input type="number" id="time" name="time" class="form-control form-control-lg" required/>
+                                    <label class="form-label" for="time">Time Required</label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <div data-mdb-input-init class="form-outline">
+                                    <textarea id="description" name="description" rows="1" cols="50" placeholder="Enter your Description here..." class="form-control form-control-lg" required></textarea>
+                                    <label class="form-label" for="description">Description</label>
+                                </div>
+                            </div>
+                            <div class="terms">
+                                <input type="checkbox" id="acceptTerms" onclick="toggleSubmit()">
+                                <label for="acceptTerms">I accept that provided information is correct to the best of my knowledge and I accept all<a href="#"> terms and conditions</a></label>
+                            </div>
+                            <button type="submit" id="submitBtn" disabled class="btn btn-success btn-lg">Create</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+  function toggleSubmit() {
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = !document.getElementById('acceptTerms').checked;
+  }
+</script>
+{% endblock %}
+{% block scriptslink %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.0.0/mdb.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.0.0/mdb.min.js"></script>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block remtitle %} Profile - {{ user.name}} {% endblock %}
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Welcome {{ user.name }}</a>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+        <a class="navbar-brand" href="/{{user_type}}/dashboard">Home</a>
+        <a class="navbar-brand" href="/{{user_type}}/search">Search</a>
+        <a class="navbar-brand" href="/{{user_type}}/summary">Summary</a>
+      </div>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+        {% if user_type == 'professional' %}
+        <div class="navbar-nav">
+            <a class="nav-link" href="/{{user_type}}/myservices">My Services</a>
+        </div>
+        {% endif %}
+        <div class="navbar-nav">
+          <a class="nav-link" href="/logout">Logout</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+<section class="vh-100 gradient-custom">
+    <div class="container py-5 h-100">
+        <div class="row justify-content-center align-items-center h-100">
+            <div class="col-12 col-lg-9 col-xl-7">
+                <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
+                    <div class="card-body p-4 p-md-5">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                {% if user.profile %}
+                                <img src="{{url_for('static', filename='profile/' ~ user.username ~ '.jpg')}}" alt="Generic placeholder image" class="fixed-image">
+                                {% else %}
+                                <img src="{{url_for('static', filename='profile/default_user.jpg')}}" alt="Generic placeholder image" class="fixed-image">
+                                {% endif %}
+                                <p class="mt-2" style="max-width: 180px; word-wrap: break-word; overflow-wrap: break-word; white-space: normal;">{{user.description}}</p>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h4 class="mb-1">{{ user.name }}</h4>
+                                <p class="mb-2 pb-1"><strong>Username: </strong>{{ user.username }}</p>
+                                <p class="mb-2 pb-1"><strong>ID: </strong>{{ user.id }}</p>
+                                <p class="mb-2 pb-1"><strong>Address: </strong>{{ user.street }}, {{ user.city }}, {{ user.state }}, {{ user.postal_code }}</p>
+                                <div class="d-flex justify-content-start rounded-3 p-2 mb-2 bg-body-tertiary">
+                                    <div class="px-3">
+                                        <p class="small text-muted mb-1">Email</p>
+                                        <p class="mb-0">{{ user.email }}</p>
+                                    </div>
+                                    <div class="px-3">
+                                        <p class="small text-muted mb-1">Phone</p>
+                                        <p class="mb-0">{{ user.phone }}</p>
+                                    </div>
+                                    <div class="px-3">
+                                        <p class="small text-muted mb-1">Category</p>
+                                        <p class="mb-0">{{user_type}}</p>
+                                    </div>
+                                </div>
+                                <form action="/{{user_type}}/profile_action" method="POST">
+                                    <div class="d-flex gap-2">
+                                        <a href="/{{user_type}}/editprofile" class="btn btn-primary btn-lg">Edit Profile</a>
+                                        <a href="/{{user_type}}/password_change" class="btn btn-primary btn-lg">Change Password</a>
+                                        {% if user_type != 'admin' %}
+                                        <button type="submit" name="action" value="delete" class="btn btn-danger btn-lg">Delete Account</button>
+                                        {% endif %}
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

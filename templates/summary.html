@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% block remtitle %}{{ user_type }} - Summary Page{% endblock %}
+{% block cont %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+{% endblock %}
+{% block content %}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Welcome {{ user.name }}</a>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+            <a class="navbar-brand" href="/{{ user_type }}/dashboard">Home</a>
+            <a class="navbar-brand" href="/{{ user_type }}/search">Search</a>
+        </div>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-link" href="/{{ user_type }}/profile">Profile</a>
+            </div>
+            {% if user_type == 'professional' %}
+            <div class="navbar-nav">
+                <a class="nav-link" href="/{{user_type}}/myservices">My Services</a>
+            </div>
+            {% endif %}
+            <div class="navbar-nav">
+                <a class="nav-link" href="/logout">Logout</a>
+            </div>
+        </div>
+    </div>
+</nav>
+<section class="gradient-custom" style="min-height: 100vh;">
+    <div class="container py-5 h-100">
+        {% if user_type == 'customer' %}
+        <div class="container mt-5">
+            <h2 class="text-center">SUMMARY</h2>
+            <hr class="border text-secondary-emphasis border-3 opacity-50">
+            <!-- Summary Stats -->
+            <div class="row text-center mb-4">
+                <div class="col-md-6">
+                    <h4>Total Services Requested</h4>
+                    <p class="fs-3 fw-bold text-dark">{{ total_services }}</p>
+                </div>
+                <div class="col-md-6">
+                    <h4>Total Spent</h4>
+                    <p class="fs-3 fw-bold text-dark">${{ total_spent }}</p>
+                </div>
+            </div>
+            <hr class="border text-secondary-emphasis border-3 opacity-50">
+        
+            <div class="row">
+                <div class="col-md-4 text-center">
+                    <h5>Total Services by Category</h5>
+                    <img src="{{ url_for('static', filename='summary/customer_chart_1.png') }}" class="img-fluid" alt="Service Request Status Distribution">
+                </div>
+                <div class="col-md-4 text-center">
+                    <h5>Service Status Distribution</h5>
+                    <img src="{{ url_for('static', filename='summary/customer_chart_2.png') }}" class="img-fluid" alt="Services by Category">
+                </div>
+                <div class="col-md-4 text-center">
+                    <h5>Spending on Closed Services</h5>
+                    <img src="{{ url_for('static', filename='summary/customer_chart_3.png') }}" class="img-fluid" alt="Service Request Status Distribution">
+                </div>
+            </div>
+        </div>
+
+        <div class="container mt-4">
+            <div class="d-flex justify-content-end gap-3 mt-4">
+                <a href="/{{user_type}}/search" class="btn btn-primary">Request New Service</a>
+                <a href="/customer/dashboard#customer-service-history" class="btn btn-secondary">View All Services History</a>
+                <a href="/{{user_type}}/profile" class="btn btn-warning">Profile</a>
+            </div>
+        </div>
+        {% elif user_type == 'professional' %}
+        <div class="container mt-5">
+            <h2 class="text-center">SUMMARY</h2>
+            <hr class="border text-secondary-emphasis border-3 opacity-50">
+            <!-- Summary Stats -->
+            <div class="row text-center mb-2">
+                <div class="col-md-4">
+                    <h4>Total Services Submitted</h4>
+                    <p class="fs-3 fw-bold text-dark">{{ total_services }}</p>
+                </div>
+                <div class="col-md-4">
+                    <h4>Total Services Completed</h4>
+                    <p class="fs-3 fw-bold text-dark">{{ total_services_completed }}</p>
+                </div>
+                <div class="col-md-4">
+                    <h4>Total Revenue</h4>
+                    <p class="fs-3 fw-bold text-dark">${{ total_revenue }}</p>
+                </div>
+            </div>
+            <hr class="border text-secondary-emphasis border-3 opacity-50">
+            
+            <div class="row">
+                {% for chart_title, index in charts %}
+                    <div class="col-md-4 text-center">
+                        <h5>{{ chart_title }}</h5>
+                        <img src="{{ url_for('static', filename='summary/professional_chart_' ~ index ~ '.png') }}" class="img-fluid" alt="{{ chart_title }}">
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% elif user_type == 'admin' %}
+        <div class="container mt-5">
+            <h2 class="text-center">SUMMARY</h2>
+            <hr class="border text-secondary-emphasis border-3 opacity-50">
+            
+            <!-- Summary Stats -->
+            <div class="row text-center mb-2">
+                <div class="col-md-4">
+                    <h4>Total Approved Services</h4>
+                    <p class="fs-3 fw-bold text-dark">{{ total_services }}</p>
+                </div>
+                <div class="col-md-4">
+                    <h4>Total User</h4>
+                    <p class="fs-3 fw-bold text-dark">{{ total_user }}</p>
+                </div>
+                <div class="col-md-4">
+                    <h4>Total Request Made</h4>
+                    <p class="fs-3 fw-bold text-dark">{{ total_request }}</p>
+                </div>
+            </div>
+            <hr class="border text-secondary-emphasis border-3 opacity-50">
+            <div class="row">
+                {% for chart_title, index in charts %}
+                    <div class="col-md-6 text-center">
+                        <h5 class="text-center fw-bold mt-3 mb-3 pb-2">{{ chart_title }}</h5>
+                        <img src="{{ url_for('static', filename='summary/admin_chart_' ~ index ~ '.png') }}" class="img-fluid" alt="{{ chart_title }}">
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

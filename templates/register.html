@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block remtitle %} Register {% endblock %}
+{% block content %}
+
+<section class="vh-100 gradient-custom">
+  <div class="container py-5 h-100">
+    <div class="row justify-content-center align-items-center h-100">
+      <div class="col-12 col-lg-9 col-xl-7">
+        <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
+          <div class="card-body p-4 p-md-4">
+            <form method="POST" action="./register">
+              <h4 class="text-center mb-4">Registeration Form</h4>
+              <div class="row">
+                <div class="col-md-6 mb-4">
+                  <div data-mdb-input-init class="form-outline">
+                    <input type="text" id="name" name="name" class="form-control form-control-sm" required />
+                    <label class="form-label" for="name">Full Name</label>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                  <div data-mdb-input-init class="form-outline">
+                    <input type="text" id="username" name="username" class="form-control form-control-sm" required />
+                    <label class="form-label" for="username">Username</label>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-6 mb-4">
+                  <div data-mdb-input-init class="form-outline">
+                    <input type="email" id="email" name="email" class="form-control form-control-sm" required />
+                    <label class="form-label" for="email">Email</label>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                  <div data-mdb-input-init class="form-outline">
+                    <input type="tel" id="phone" name="phone" class="form-control form-control-sm" required pattern="[0-9]{10}" title="Enter a valid 10-digit phone number"/>
+                    <label class="form-label" for="phone">Phone Number</label>
+                  </div>
+                </div>
+              </div>
+          
+              <div class="row">
+                <div class="col-md-6 mb-4">
+                  <div data-mdb-input-init class="form-outline">
+                    <input type="text" id="street" name="street" class="form-control form-control-sm" required />
+                    <label class="form-label" for="street">Street Address</label>                    
+                  </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                  <div data-mdb-input-init class="form-outline">
+                    <input type="text" id="city" name="city" class="form-control form-control-sm" required />
+                    <label class="form-label" for="city">City</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-4">
+                  <div data-mdb-input-init class="form-outline">
+                    <input type="text" id="state" name="state" class="form-control form-control-sm" required />
+                    <label class="form-label" for="state">State/Province</label>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                  <div data-mdb-input-init class="form-outline">
+                    <input type="text" id="postal_code" name="postal_code" class="form-control form-control-sm" required pattern="[0-9]{6}" title="Enter a valid postal code"/>
+                    <label class="form-label" for="postal_code">Postal Code</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-4">
+                  <div data-mdb-input-init class="form-outline">
+                    <input type="password" id="password" name="password" class="form-control form-control-sm" required />
+                    <label class="form-label" for="password">Password</label>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                  <div data-mdb-input-init class="form-outline">
+                    <input type="password" id="confirm_password" name="confirm_password" class="form-control form-control-sm" required />
+                    <label class="form-label" for="confirm_password">Confirm Password</label>
+                  </div>
+                </div>
+              </div>
+
+              {% if user_type == 'professional' %}
+
+              <div class="row">
+                <div class="col-md-6 mb-4">
+                  <div data-mdb-input-init class="form-outline">
+                    <textarea id="description" name="description" rows="1" cols="50" placeholder="Enter your description here..." class="form-control form-control-sm" required></textarea>
+                    <label class="form-label" for="description">Description</label>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                  <div data-mdb-input-init class="form-outline">
+                    <input type="number" id="experience" name="experience" placeholder="Enter your Experience here..." class="form-control form-control-sm" required></input>
+                    <label class="form-label" for="experience">Experience(In Years)</label>
+                  </div>
+                </div>
+              </div>
+              
+              <a href="/customer/register" class="btn btn-sm btn-primary" tabindex="-1">Register As Customer</a>
+              <a href="/admin/register" class="btn btn-sm btn-primary" tabindex="-1">Register As Admin</a>
+              
+              {% elif user_type == 'admin' %}
+              
+              <div class="row">
+                <div class="col-md-6 mb-4">
+                  <div data-mdb-input-init class="form-outline">
+                    <input type="text" id="admincode" name="admincode" placeholder="Enter Admin Registration Code here..." class="form-control form-control-sm" required></input>
+                    <label class="form-label" for="admincode">Admin Registration Code</label>
+                  </div>
+                </div>
+              </div>
+
+              <a href="/professional/register" class="btn btn-sm btn-primary" tabindex="-1">Register As Professional</a>
+              <a href="/customer/register" class="btn btn-sm btn-primary" tabindex="-1">Register As Customer</a>
+              
+              {% elif user_type == 'customer' %}
+              <a href="/professional/register" class="btn btn-sm btn-primary" tabindex="-1">Register As Professional</a>
+              <a href="/admin/register" class="btn btn-sm btn-primary" tabindex="-1">Register As Admin</a>
+              {% endif %}
+              <div class="mt-4 pt-2">
+                <input class="btn btn-success btn-sm" type="submit" value="Register" />
+                <a href="/login" class="btn btn-outline-info btn-primary btn-sm">Login Here</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block remtitle %} Request A Service {% endblock %}
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Welcome {{ customer.name }}</a>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+        <a class="navbar-brand" href="/customer/dashboard">Home</a>
+        <a class="navbar-brand" href="/customer/search">Search</a>
+        <a class="navbar-brand" href="/customer/summary">Summary</a>
+      </div>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-link" href="/customer/profile">Profile</a>
+        </div>
+        <div class="navbar-nav">
+          <a class="nav-link" href="/logout">Logout</a>
+        </div>
+      </div>
+    </div>
+</nav>
+
+<section class="vh-100 gradient-custom">
+    <div class="container py-5 h-100">
+        <div class="row justify-content-center align-items-center h-100">
+            <div class="col-12 col-lg-9 col-xl-7">
+                <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
+                    <div class="card-body p-4 p-md-5">
+                        <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">{{ service.ServiceType }}</h3>
+                        <div class="col-md-12 mb-4">
+                            <strong>Service Name: </strong>{{ service.name }}    
+                        </div>
+                        <div class="col-md-12 mb-4">
+                            <strong>Service ID: </strong>{{ service.id }}    
+                        </div>
+                        <div class="col-md-12 mb-4">
+                            <strong>Description: </strong>{{ service.description | truncate(600) }}    
+                        </div>
+                        <div class="col-md-12 mb-4">
+                            <strong>Price: </strong>{{ service.price }}    
+                        </div>
+                        <div class="col-md-12 mb-4">
+                            <strong>Time Required: </strong>{{ service.time_required }}    
+                        </div>
+                        <form id="termsForm" method="POST" action="{{service_id}}">
+                          <div class="row">
+                            <div class="col-md-6 mb-4">
+                              <div data-mdb-input-init class="form-outline">
+                                <textarea id="description" name="message" rows="1" cols="50" placeholder="Enter your Message here..." class="form-control form-control-lg" required></textarea>
+                                <label class="form-label" for="description">Message</label>
+                              </div>
+                            </div>
+                          </div> 
+                            <div class="terms">
+                                <input type="checkbox" id="acceptTerms" onclick="toggleSubmit()">
+                                <label for="acceptTerms">I accept the <a href="#terms">terms and conditions</a></label>
+                            </div>
+                            <button type="submit" id="submitBtn" disabled class="btn btn-primary btn-lg">Submit</button>    
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<script>
+  function toggleSubmit() {
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = !document.getElementById('acceptTerms').checked;
+  }
+</script>
+{% endblock %}
