@@ -1,13 +1,11 @@
 import os
 
 class app_config:
-    # Use environment variables for production (Vercel), fallback to defaults for local dev
     APP_SECRET_KEY = os.getenv("APP_SECRET_KEY", "your_secret_key")
     admin_code = os.getenv("ADMIN_CODE", "AS659AW52S9D9W")
     database = os.getenv("DATABASE_NAME", "database.sqlite3")
     
-    # Database URL - use DATABASE_URL from environment (for Vercel Postgres) or construct SQLite path
-    DATABASE_URL = os.getenv("DATABASE_URL", None)  # Will be set in main.py if None
+    DATABASE_URL = os.getenv("DATABASE_URL", None)
     
     admin_name = os.getenv("ADMIN_NAME", "Akshat B Gupta")
     admin_uname = os.getenv("ADMIN_UNAME", "gakshatb")
