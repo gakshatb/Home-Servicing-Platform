@@ -10,6 +10,11 @@ import traceback
 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, parent_dir)
 
+# Initialize variables
+app = None
+init_db = None
+handler = None
+
 try:
     # Import the Flask app from main
     from main import app, init_db
@@ -25,6 +30,7 @@ try:
         logging.warning(f"Database initialization note: {e}")
     
     # Export the app for Vercel
+    # Vercel expects the Flask app directly as the handler
     handler = app
     
 except ImportError as e:
@@ -85,4 +91,22 @@ except Exception as e:
         """, 500
     
     handler = error_app
+
+# Ensure handler is always defined
+if handler is None:
+    from flask import Flask
+    handler = Flask(__name__)
+    
+    @handler.route('/', defaults={'path': ''})
+    @handler.route('/<path:path>')
+    def fallback_handler(path):
+        return """
+        <html>
+        <head><title>Handler Error</title></head>
+        <body>
+            <h1>Handler Not Initialized</h1>
+            <p>The application handler failed to initialize. Check Vercel logs for details.</p>
+        </body>
+        </html>
+        """, 500
 
