@@ -114,21 +114,70 @@ class Feedback(db.Model):
 
 #initialising database
 db.init_app(app)
-app.app_context().push()
-
 
 #creating database if not already exists
 # Note: SQLite won't work on Vercel (read-only filesystem)
 # You'll need to use Vercel Postgres or another database service
-try:
-    if not os.path.exists(ap.database):
+def init_db():
+    """Initialize database tables. Safe for serverless environments."""
+    try:
         with app.app_context():
-            db.create_all()
-except (OSError, PermissionError) as e:
-    # Handle read-only filesystem (e.g., Vercel)
-    print(f"Warning: Could not create database file: {e}")
-    print("Note: SQLite is not supported on Vercel. Please use Vercel Postgres or another database service.")
+            # Only check for SQLite file if not using DATABASE_URL
+            if ap.DATABASE_URL:
+                # Using Postgres or other external database
+                # Just create tables - connection will be established on first query
+                db.create_all()
+            else:
+                # Using SQLite (local development only)
+                db_file_path = os.path.join(curr_dir, ap.database)
+                if os.path.exists(db_file_path):
+                    # Database exists, just ensure tables are created
+                    db.create_all()
+                else:
+                    # Try to create database file (will fail on Vercel)
+                    try:
+                        db.create_all()
+                    except (OSError, PermissionError) as e:
+                        error_msg = f"SQLite not supported on Vercel. Error: {e}"
+                        print(f"Warning: {error_msg}")
+                        print("Note: Please set DATABASE_URL environment variable to use Vercel Postgres.")
+                        # Don't raise - let the app start, DB operations will fail gracefully
+    except Exception as e:
+        # Log error but don't crash the app
+        error_msg = f"Database initialization error: {e}"
+        print(f"Warning: {error_msg}")
+        # Check if it's a connection error
+        if "DATABASE_URL" in str(e) or "connection" in str(e).lower():
+            print("Note: Please check your DATABASE_URL environment variable in Vercel settings.")
+        # Continue - app can start, DB operations will fail with clear errors
 
+
+@app.route("/health")
+def health():
+    """Health check endpoint for Vercel"""
+    try:
+        # Test database connection
+        db_status = "unknown"
+        if ap.DATABASE_URL:
+            try:
+                with app.app_context():
+                    db.engine.connect()
+                    db_status = "connected"
+            except Exception as e:
+                db_status = f"error: {str(e)}"
+        else:
+            db_status = "sqlite (not configured for Vercel)"
+        
+        return {
+            "status": "ok",
+            "database": db_status,
+            "database_url_set": bool(ap.DATABASE_URL)
+        }, 200
+    except Exception as e:
+        return {
+            "status": "error",
+            "error": str(e)
+        }, 500
 
 @app.route("/")
 def home():
