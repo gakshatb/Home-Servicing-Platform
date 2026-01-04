@@ -1279,5 +1279,9 @@ def add_admin():
 
 # Initialize admin only when running locally (not in serverless)
 if __name__ == '__main__':
-    add_admin()
+    # Initialize database tables first
+    init_db()
+    # Then create admin user within application context
+    with app.app_context():
+        add_admin()
     app.run(host='0.0.0.0',port=8000)
