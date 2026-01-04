@@ -24,12 +24,7 @@ app.secret_key= ap.APP_SECRET_KEY
 
 
 #adding the database
-# Use DATABASE_URL from environment (for Vercel Postgres) or fallback to SQLite
-database_url = getattr(ap, 'DATABASE_URL', None) or os.getenv('DATABASE_URL', None)
-if database_url:
-    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
-else:
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+os.path.join(curr_dir, ap.database)
+app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///'+os.path.join(curr_dir, ap.database)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 
 
@@ -115,72 +110,13 @@ class Feedback(db.Model):
 
 #initialising database
 db.init_app(app)
+app.app_context().push()
+
 
 #creating database if not already exists
-# Note: SQLite won't work on Vercel (read-only filesystem)
-# You'll need to use Vercel Postgres or another database service
-def init_db():
-    """Initialize database tables. Safe for serverless environments."""
-    try:
-        with app.app_context():
-            # Only check for SQLite file if not using DATABASE_URL
-            database_url = getattr(ap, 'DATABASE_URL', None) or os.getenv('DATABASE_URL', None)
-            if database_url:
-                # Using Postgres or other external database
-                # Just create tables - connection will be established on first query
-                db.create_all()
-            else:
-                # Using SQLite (local development only)
-                db_file_path = os.path.join(curr_dir, ap.database)
-                if os.path.exists(db_file_path):
-                    # Database exists, just ensure tables are created
-                    db.create_all()
-                else:
-                    # Try to create database file (will fail on Vercel)
-                    try:
-                        db.create_all()
-                    except (OSError, PermissionError) as e:
-                        error_msg = f"SQLite not supported on Vercel. Error: {e}"
-                        print(f"Warning: {error_msg}")
-                        print("Note: Please set DATABASE_URL environment variable to use Vercel Postgres.")
-                        # Don't raise - let the app start, DB operations will fail gracefully
-    except Exception as e:
-        # Log error but don't crash the app
-        error_msg = f"Database initialization error: {e}"
-        print(f"Warning: {error_msg}")
-        # Check if it's a connection error
-        if "DATABASE_URL" in str(e) or "connection" in str(e).lower():
-            print("Note: Please check your DATABASE_URL environment variable in Vercel settings.")
-        # Continue - app can start, DB operations will fail with clear errors
+if not os.path.exists(ap.database):
+    db.create_all()
 
-
-@app.route("/health")
-def health():
-    """Health check endpoint for Vercel"""
-    try:
-        # Test database connection
-        db_status = "unknown"
-        database_url = getattr(ap, 'DATABASE_URL', None) or os.getenv('DATABASE_URL', None)
-        if database_url:
-            try:
-                with app.app_context():
-                    db.engine.connect()
-                    db_status = "connected"
-            except Exception as e:
-                db_status = f"error: {str(e)}"
-        else:
-            db_status = "sqlite (not configured for Vercel)"
-        
-        return {
-            "status": "ok",
-            "database": db_status,
-            "database_url_set": bool(database_url)
-        }, 200
-    except Exception as e:
-        return {
-            "status": "error",
-            "error": str(e)
-        }, 500
 
 @app.route("/")
 def home():
@@ -1280,11 +1216,6 @@ def add_admin():
         db.session.commit()
 
 
-# Initialize admin only when running locally (not in serverless)
 if __name__ == '__main__':
-    # Initialize database tables first
-    init_db()
-    # Then create admin user within application context
-    with app.app_context():
-        add_admin()
+    add_admin()
     app.run(host='0.0.0.0',port=8000)
