@@ -25,8 +25,9 @@ app.secret_key= ap.APP_SECRET_KEY
 
 #adding the database
 # Use DATABASE_URL from environment (for Vercel Postgres) or fallback to SQLite
-if ap.DATABASE_URL:
-    app.config['SQLALCHEMY_DATABASE_URI'] = ap.DATABASE_URL
+database_url = getattr(ap, 'DATABASE_URL', None) or os.getenv('DATABASE_URL', None)
+if database_url:
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 else:
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+os.path.join(curr_dir, ap.database)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
@@ -123,7 +124,8 @@ def init_db():
     try:
         with app.app_context():
             # Only check for SQLite file if not using DATABASE_URL
-            if ap.DATABASE_URL:
+            database_url = getattr(ap, 'DATABASE_URL', None) or os.getenv('DATABASE_URL', None)
+            if database_url:
                 # Using Postgres or other external database
                 # Just create tables - connection will be established on first query
                 db.create_all()
@@ -158,7 +160,8 @@ def health():
     try:
         # Test database connection
         db_status = "unknown"
-        if ap.DATABASE_URL:
+        database_url = getattr(ap, 'DATABASE_URL', None) or os.getenv('DATABASE_URL', None)
+        if database_url:
             try:
                 with app.app_context():
                     db.engine.connect()
@@ -171,7 +174,7 @@ def health():
         return {
             "status": "ok",
             "database": db_status,
-            "database_url_set": bool(ap.DATABASE_URL)
+            "database_url_set": bool(database_url)
         }, 200
     except Exception as e:
         return {
