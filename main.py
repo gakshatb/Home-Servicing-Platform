@@ -24,7 +24,11 @@ app.secret_key= ap.APP_SECRET_KEY
 
 
 #adding the database
-app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///'+os.path.join(curr_dir, ap.database)
+# Use DATABASE_URL from environment (for Vercel Postgres) or fallback to SQLite
+if ap.DATABASE_URL:
+    app.config['SQLALCHEMY_DATABASE_URI'] = ap.DATABASE_URL
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+os.path.join(curr_dir, ap.database)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 
 
@@ -114,8 +118,16 @@ app.app_context().push()
 
 
 #creating database if not already exists
-if not os.path.exists(ap.database):
-    db.create_all()
+# Note: SQLite won't work on Vercel (read-only filesystem)
+# You'll need to use Vercel Postgres or another database service
+try:
+    if not os.path.exists(ap.database):
+        with app.app_context():
+            db.create_all()
+except (OSError, PermissionError) as e:
+    # Handle read-only filesystem (e.g., Vercel)
+    print(f"Warning: Could not create database file: {e}")
+    print("Note: SQLite is not supported on Vercel. Please use Vercel Postgres or another database service.")
 
 
 @app.route("/")
@@ -1216,6 +1228,7 @@ def add_admin():
         db.session.commit()
 
 
+# Initialize admin only when running locally (not in serverless)
 if __name__ == '__main__':
     add_admin()
     app.run(host='0.0.0.0',port=8000)
